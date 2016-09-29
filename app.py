@@ -1,62 +1,51 @@
 from flask import Flask, url_for, redirect, render_template, request, abort
 app = Flask(__name__)
 
+#######################
+# Basic routing/views #
+#######################
 
-# simple URL route
-@app.route('/')
+
+# Simple route/view
+@app.route('/')  # index route
 def hello_world():
     return "hello, world!"
 
 
-# render template, variables are passed to the template via kwargs
-# following template name in view function args.
+# Render a template
+# variable content is passed to the template as kwargs
+# to render_template function following template name
+#
+# Always add trailing / to route - requests to url without
+# it will resolve to it
 @app.route('/templated/')
 def templated():
     h2 = "<h2>This content is rendered via a template</h2>"
     return render_template('index.html', h2=h2)
 
 
-# Route to variable URL, request to host/user/john
-# would resolve to page containing Hello, john.
-# Always add trailing / to route - requests to url without
-# it will resolve to it
+# Route to variable URL
+# E.g. request to /user/john would resolve to page containing Hello, john.
 @app.route('/user/<username>/')
 def user(username):
     return 'Hello, %s' % username
 
 
-# optional converter, only accepts integers as varible part of URL
-# can also use float of path (as default but accepts /s)
+# Optional converter, only accepts integers as varible part of URL
+# can also use float or path (as default but accepts /s)
 @app.route('/post/<int:post_id>/')
 def show_post(post_id):
     return 'This is post %d' % post_id
 
 
-# redirect to another view function
+# Redirect to another view function
 @app.route('/old-posts/')
 def old_posts():
     return redirect(url_for('show_post', post_id=12345))
 
 
-# display all request headers
-@app.route('/headers/')
-def headers():
-    headers = request.headers
-    output = ""
-    for item in headers:
-        item = str(item) + "<br>"
-        output += item
-    return output
-
-# display single request header (when known)
-@app.route('/browser/')
-def browser():
-    user_agent = request.headers.get('User-Agent')
-    return 'Browser is: %s' % user_agent
-
-
-# multiple routes to same view funciton. Show which route is being
-# used with request.url_rule
+# Multiple routes to same view funciton
+# show which route is being used with request.url_rule
 @app.route('/url/')
 @app.route('/url2/')
 def url():
@@ -64,7 +53,7 @@ def url():
     return 'route being used is: %s' % url
 
 
-# route to a number of pages if matching varible portion of route or cause 404
+# Route to a number of pages if matching varible portion of route or cause 404
 @app.route('/pages/<variable_part>')
 def var_page(variable_part):
     variable_parts = ['123', '456', 'hello-world', 'readifying-austlii']
@@ -74,10 +63,35 @@ def var_page(variable_part):
         abort(404)
 
 
-# 404 handling
+# Custom 404 handling
 @app.errorhandler(404)
 def not_found(error):
     return '404: Page Not Found :(', 404
+
+
+######################
+# The request object #
+######################
+
+
+# Display all request headers
+# request.headers is dictionary-like object so standard dict methods apply
+# E.g. request.headers.get('some_key')
+@app.route('/headers/')
+def headers():
+    headers = request.headers
+    output = ""
+    for item in headers:
+        item = str(item) + "<br>"
+        output += item
+    return output
+
+
+# display single request header (when known)
+@app.route('/browser/')
+def browser():
+    user_agent = request.headers.get('User-Agent')
+    return 'Browser is: %s' % user_agent
 
 
 if __name__ == '__main__':
