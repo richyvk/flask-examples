@@ -44,8 +44,8 @@ def old_posts():
     return redirect(url_for('show_post', post_id=12345))
 
 
-# Multiple routes to same view funciton
-# show which route is being used with request.url_rule
+# Multiple routes to same view function
+# you can tell which route is being used with request.url_rule
 @app.route('/url/')
 @app.route('/url2/')
 def url():
