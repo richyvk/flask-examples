@@ -12,18 +12,6 @@ def hello_world():
     return "hello, world!"
 
 
-# Render a template
-# variable content is passed to the template as kwargs
-# to render_template function following template name
-#
-# Always add trailing / to route - requests to url without
-# it will resolve to it
-@app.route('/templated/')
-def templated():
-    h2 = "<h2>This content is rendered via a template</h2>"
-    return render_template('index.html', h2=h2)
-
-
 # Route to variable URL
 # E.g. request to /user/john would resolve to page containing Hello, john.
 @app.route('/user/<username>/')
@@ -69,13 +57,33 @@ def not_found(error):
     return '404: Page Not Found :(', 404
 
 
+#######################
+# Rendering templates #
+#######################
+
+
+# Simple template render
+# variable content is passed to the template as render_template() kwarg
+@app.route('/simple-template/')
+def templated():
+    h2_content = "This content is rendered via a template"
+    return render_template('simple-template.html', h2_content=h2_content)
+
+
+# Inherited template
+# See base.html and extends-base.html templates for explanation
+@app.route('/extended-base-template/')
+def extends_base():
+    return render_template('extends-base.html')
+
+
 ######################
 # The request object #
 ######################
 
 
 # Display all request headers
-# request.headers is dictionary-like object so standard dict methods apply
+# request.headers is dictionary-like object so standard Dict methods apply
 # E.g. request.headers.get('some_key')
 @app.route('/headers/')
 def headers():
@@ -87,11 +95,24 @@ def headers():
     return output
 
 
-# display single request header (when known)
+# Display single request header (when known)
 @app.route('/browser/')
 def browser():
     user_agent = request.headers.get('User-Agent')
     return 'Browser is: %s' % user_agent
+
+
+# Get url params
+# e.g. browse to http://localhost:5000/params?some_param=hello, world!
+# request.args is a Werkzeug MultiDict containing all params as k,v pairs
+# See http://werkzeug.pocoo.org/docs/0.11/datastructures/
+@app.route('/params/')
+def params():
+    param = request.args.get('some_param')
+    if param:
+        return param
+    else:
+        abort(404)  # handle missing param
 
 
 if __name__ == '__main__':

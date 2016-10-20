@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Template inheritance{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3 col-xs-12">
+				<h1>Template inheritance example</h1>
+				<p>The page title and body contenton this page is rendered by the extends-base.html template which inherits from the base.html template.</p>
+				<p>The base.html temple provides the basic html tags and head content.</p>
+			</div>
+		</div>
+	</div>
+{% endblock %}
