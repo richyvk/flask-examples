@@ -20,7 +20,7 @@ def user(username):
 
 
 # Optional converter, only accepts integers as varible part of URL
-# can also use float or path (as default but accepts /s)
+# can also use float or path (path is same as default but accepts /s)
 @app.route('/post/<int:post_id>/')
 def show_post(post_id):
     return 'This is post %d' % post_id
@@ -112,8 +112,7 @@ def params():
     if param:
         return param
     else:
-        abort(404)  # handle missing param
-
+        return "bad request :(", 400  # handle missing param as 400 error
 
 if __name__ == '__main__':
     app.run(debug=True)
